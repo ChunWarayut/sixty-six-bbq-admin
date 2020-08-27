@@ -31,6 +31,7 @@ import {
 
 const structure = [
   { id: 0, label: "Dashboard", link: "/app/dashboard", icon: <HomeIcon /> },
+  { id: 15, label: "About", link: "/app/about", icon: <TableIcon /> },
   {
     id: 1,
     label: "Typography",

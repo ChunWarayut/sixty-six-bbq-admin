@@ -55,12 +55,13 @@ function loginUser(dispatch, login, password, history, setIsLoading, setError) {
 
   if (!!login && !!password) {
     setTimeout(() => {
-      localStorage.setItem('id_token', 1)
-      setError(null)
-      setIsLoading(false)
-      dispatch({ type: 'LOGIN_SUCCESS' })
+      localStorage.setItem("id_token", 1);
+      localStorage.setItem("id_login", login);
+      setError(null);
+      setIsLoading(false);
+      dispatch({ type: "LOGIN_SUCCESS" });
 
-      history.push('/app/dashboard')
+      history.push("/app/dashboard");
     }, 2000);
   } else {
     dispatch({ type: "LOGIN_FAILURE" });
@@ -71,6 +72,7 @@ function loginUser(dispatch, login, password, history, setIsLoading, setError) {
 
 function signOut(dispatch, history) {
   localStorage.removeItem("id_token");
+  localStorage.removeItem("id_login");
   dispatch({ type: "SIGN_OUT_SUCCESS" });
   history.push("/login");
 }
