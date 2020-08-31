@@ -22,6 +22,13 @@ import google from "../../images/google.svg";
 // context
 import { useUserDispatch, loginUser } from "../../context/UserContext";
 
+import { loginByUsername } from "../../api/user";
+
+function sleep(delay = 0) {
+  return new Promise(resolve => {
+    setTimeout(resolve, delay);
+  });
+}
 function Login(props) {
   var classes = useStyles();
 
@@ -35,7 +42,25 @@ function Login(props) {
   var [nameValue, setNameValue] = useState("");
   var [loginValue, setLoginValue] = useState("");
   var [passwordValue, setPasswordValue] = useState("");
-
+  const handleLogin = () => {
+    loginByUsername(loginValue, passwordValue).then(async e => {
+      await setIsLoading(true);
+      await sleep(1e3);
+      if (e) {
+        loginUser(
+          userDispatch,
+          loginValue,
+          passwordValue,
+          props.history,
+          setIsLoading,
+          setError,
+        );
+      } else {
+        setError(true);
+        setIsLoading(false);
+      }
+    });
+  };
   return (
     <Grid container className={classes.container}>
       <div className={classes.logotypeContainer}>
@@ -52,27 +77,20 @@ function Login(props) {
             centered
           >
             <Tab label="Login" classes={{ root: classes.tab }} />
-            <Tab label="New User" classes={{ root: classes.tab }} />
+            {/* <Tab label="New User" classes={{ root: classes.tab }} /> */}
           </Tabs>
           {activeTabId === 0 && (
             <React.Fragment>
               <Typography variant="h1" className={classes.greeting}>
-                Good Morning, User
+                SIXTY-SIX BBQ
               </Typography>
-              <Button size="large" className={classes.googleButton}>
-                <img src={google} alt="google" className={classes.googleIcon} />
-                &nbsp;Sign in with Google
-              </Button>
-              <div className={classes.formDividerContainer}>
-                <div className={classes.formDivider} />
-                <Typography className={classes.formDividerWord}>or</Typography>
-                <div className={classes.formDivider} />
-              </div>
+
               <Fade in={error}>
                 <Typography color="secondary" className={classes.errorMessage}>
                   Something is wrong with your login or password :(
                 </Typography>
               </Fade>
+
               <TextField
                 id="email"
                 InputProps={{
@@ -84,8 +102,8 @@ function Login(props) {
                 value={loginValue}
                 onChange={e => setLoginValue(e.target.value)}
                 margin="normal"
-                placeholder="Email Adress"
-                type="email"
+                placeholder="User"
+                type="text"
                 fullWidth
               />
               <TextField
@@ -103,6 +121,7 @@ function Login(props) {
                 type="password"
                 fullWidth
               />
+
               <div className={classes.formButtons}>
                 {isLoading ? (
                   <CircularProgress size={26} className={classes.loginLoader} />
@@ -111,16 +130,7 @@ function Login(props) {
                     disabled={
                       loginValue.length === 0 || passwordValue.length === 0
                     }
-                    onClick={() =>
-                      loginUser(
-                        userDispatch,
-                        loginValue,
-                        passwordValue,
-                        props.history,
-                        setIsLoading,
-                        setError,
-                      )
-                    }
+                    onClick={() => handleLogin()}
                     variant="contained"
                     color="primary"
                     size="large"
@@ -128,13 +138,6 @@ function Login(props) {
                     Login
                   </Button>
                 )}
-                <Button
-                  color="primary"
-                  size="large"
-                  className={classes.forgetButton}
-                >
-                  Forget Password
-                </Button>
               </div>
             </React.Fragment>
           )}
@@ -201,16 +204,7 @@ function Login(props) {
                   <CircularProgress size={26} />
                 ) : (
                   <Button
-                    onClick={() =>
-                      loginUser(
-                        userDispatch,
-                        loginValue,
-                        passwordValue,
-                        props.history,
-                        setIsLoading,
-                        setError,
-                      )
-                    }
+                    onClick={() => handleLogin()}
                     disabled={
                       loginValue.length === 0 ||
                       passwordValue.length === 0 ||
@@ -245,7 +239,7 @@ function Login(props) {
           )}
         </div>
         <Typography color="primary" className={classes.copyright}>
-          © 2014-2019 Flatlogic, LLC. All rights reserved.
+          © 2020 SIXTY-SIX-BBQ, LLC. All rights reserved.
         </Typography>
       </div>
     </Grid>
